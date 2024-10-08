@@ -20,13 +20,13 @@ classdef EnvironmentSetup
 
         function AddJPG(self)
             % Add concrete texture to the environment
-            surf([-2.5,-2.5;1.85,1.85], [-3.5,2.2;-3.5,2.2], [0,0;0,0], ...
+            surf([-1.2,-1.2;1.5,1.5], [-1.35,1.8;-1.35,1.8], [0,0;0,0], ...
                 'CData', imread('concrete.jpg'), 'FaceColor', 'texturemap');
             hold on;
         end
 
         function ObjectLayout(self)
-            % Layout all the objects (fences, tables, etc.) in the environment
+            % Layout all the objects (kitchenette, Estop, etc.) in the environment
             self.AddPly('emergencyStopButton.ply', [-2.5,-3,3.2], 0.4, 0.5);
             self.AddPly('personMaleCasual.ply', [-1,-3,0], 1, 0.5);
             self.AddPly('fireExtinguisher.ply', [2,-1.5,0], 1, 0.5);
@@ -42,4 +42,6 @@ classdef EnvironmentSetup
             hold on;
         end
     end
+end
+
 end
