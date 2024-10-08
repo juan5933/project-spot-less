@@ -43,5 +43,3 @@ classdef EnvironmentSetup
         end
     end
 end
-
-end
