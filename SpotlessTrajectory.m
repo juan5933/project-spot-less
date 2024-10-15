@@ -23,7 +23,7 @@ classdef SpotlessTrajectory < handle
             % Constructor to initialize the robot, number of steps, starting configuration, plates, and gripper
             self.robot = robot;  % Assign the robot instance
             self.steps = 10;  % Set the number of steps for trajectory interpolation
-            self.qStart = [-0.8 -pi 0 0 pi 0 0];  % Initial joint configuration
+            self.qStart = [-0.8 -pi 0 0 pi 0];  % Initial joint configuration
             self.plates = plates;  % Store the Plates instance
             self.text_h = [];  % Initialize the text handle
             self.gripper = gripper;  % Store the Gripper instance
@@ -88,8 +88,8 @@ classdef SpotlessTrajectory < handle
             disp(self.positionError);
 
             % Generate a smooth trajectory between the current and desired joint configurations
-            s = lspb(0, 1, self.steps);  % Generate a time vector using linear segment with parabolic blends (LSPB)
-            path1 = nan(self.steps, 7);  % Preallocate the path array for the trajectory
+            s = lspb(0, 1, self.steps)  % Generate a time vector using linear segment with parabolic blends (LSPB)
+            path1 = nan(self.steps, 6)  % Preallocate the path array for the trajectory
 
             % Interpolate joint angles between qStart and qEnd for each step
             for j = 1:self.steps
@@ -173,7 +173,7 @@ classdef SpotlessTrajectory < handle
 
             % Generate the trajectory using LSPB (Linear Segment with Parabolic Blend) for smooth motion
             s = lspb(0, 1, self.steps);  % Time scaling for the trajectory
-            path2 = nan(self.steps, 7);  % Preallocate the path array
+            path2 = nan(self.steps, 6);  % Preallocate the path array
 
             % Interpolate joint angles between the starting and ending configurations
             for j = 1:self.steps
@@ -251,7 +251,7 @@ classdef SpotlessTrajectory < handle
 
             % Generate the trajectory using LSPB for smooth motion
             s = lspb(0, 1, self.steps);  % Time scaling for the trajectory
-            path3 = nan(self.steps, 7);  % Preallocate the path array
+            path3 = nan(self.steps, 6);  % Preallocate the path array
 
             % Interpolate joint angles between the starting and ending configurations
             for j = 1:self.steps
@@ -330,7 +330,7 @@ classdef SpotlessTrajectory < handle
 
             % Generate a smooth trajectory using LSPB (Linear Segment with Parabolic Blend)
             s = lspb(0, 1, self.steps);  % Time scaling for smooth motion
-            path4 = nan(self.steps, 7);  % Preallocate memory for joint trajectory
+            path4 = nan(self.steps, 6);  % Preallocate memory for joint trajectory
 
             % Interpolate between the start and end joint configurations
             for j = 1:self.steps
@@ -406,7 +406,7 @@ classdef SpotlessTrajectory < handle
 
             % Generate a smooth trajectory using LSPB for smooth motion
             s = lspb(0, 1, self.steps);  % Time scaling for smooth motion
-            path5 = nan(self.steps, 7);  % Preallocate memory for the joint trajectory
+            path5 = nan(self.steps, 6);  % Preallocate memory for the joint trajectory
 
             % Interpolate between the start and end joint configurations
             for j = 1:self.steps
