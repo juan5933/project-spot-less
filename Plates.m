@@ -13,15 +13,9 @@ classdef Plates < handle
             % brickStart: 3D coordinates for where the bricks are initially placed
             % brickEnd: 3D coordinates for where the bricks will be moved to
             
-            self.platesStart = [-1, 0.5, 0;
-                               -0.9, 0.5, 0;
-                               -0.8, 0.5, 0;
-                               -0.7, 0.5, 0;
-                               -0.6, 0.5, 0;
-                               -0.5, 0.5, 0;
-                               -0.4, 0.5, 0;
-                               -0.3, 0.5, 0;
-                               -0.2, 0.5, 0];  % Starting positions for each brick (9 in total)
+            self.platesStart = [-1.55, 0.6  1.35; 
+                                -1.55, 0.6, 1.325;  
+                                -1.55, 0.6, 1.3; ];  % Starting positions for each brick (9 in total)
             
             self.platesEnd = [-1.25, 0.25, 0; 
                              -1.25, 0, 0; 
