@@ -15,17 +15,13 @@ classdef Plates < handle
             
             self.platesStart = [-1.55, 0.6  1.35; 
                                 -1.55, 0.6, 1.325;  
-                                -1.55, 0.6, 1.3; ];  % Starting positions for each brick (9 in total)
+                                -1.55, 0.6, 1.3;                
+                                ];  % Plate positions
             
-            self.platesEnd = [-1.25, 0.25, 0; 
-                             -1.25, 0, 0; 
-                             -1.25, 0.25, 0.1; 
-                             -1.25, 0, 0.1;
-                             -1.25, 0.25, 0.2; 
-                             -1.25, 0, 0.2;
-                             -1.25, 0.25, 0.3;
-                             -1.25, 0, 0.3; 
-                             -1.25, 0.25, 0.4];  % Corresponding end positions for each brick
+            self.platesEnd = [  0, 1, 1.25;
+                                0, 1, 1.30;
+                               -0, 1, 1.32;  
+                                     ];  % Corresponding end positions for each brick
             
             % Preallocate the cell array for storing the handles to the bricks in the environment
             self.plates_h = cell(1, 9);  % Array to store brick handles (9 bricks)
@@ -33,13 +29,14 @@ classdef Plates < handle
         
         function PlacePlates(self)
             % Method to place the bricks at their start positions in the environment
-            % Iterates through all bricks and places them in the scene
-            
+
             for i = 1:size(self.platesStart, 1)
                 % Place each brick using the 'PlaceObject' function at its start position
                 self.plates_h{i} = PlaceObject('yellowPlate.ply', self.platesStart(i,:));
                 hold on;  % Retain the previous objects in the scene while adding new ones
             end
         end
+
+    
     end
 end
