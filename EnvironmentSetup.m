@@ -24,12 +24,12 @@ classdef EnvironmentSetup
                 'CData', imread('concrete.jpg'), 'FaceColor', 'texturemap');
             hold on;
         end
-
+    
         function ObjectLayout(self)
             % Layout all the objects (fences, tables, etc.) in the environment
-            self.AddPly('emergencyStopButton.ply', [-2.5,-3,3.2], 0.4, 0.5);
+            self.AddPly('emergencyStopButton.ply', [-5,-4, 3.25], 0.4, 1);
             self.AddPly('personMaleCasual.ply', [-1,-3,0], 1, 1.2);
-            self.AddPly('fireExtinguisher.ply', [2,-1.5,0], 1, 0.5);
+            self.AddPly('fireExtinguisher.ply', [2.1, -1, 0], 1, 1);
             self.AddPly('kitchenenvironment.ply', [0,0,0], 1.45, 200);
         end
         
@@ -43,3 +43,4 @@ classdef EnvironmentSetup
         end
     end
 end
+
