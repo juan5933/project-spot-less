@@ -31,6 +31,8 @@ classdef EnvironmentSetup
             self.AddPly('personMaleCasual.ply', [-1,-3,0], 1, 1.2);
             self.AddPly('fireExtinguisher.ply', [2.1, -1, 0], 1, 1);
             self.AddPly('kitchenenvironment.ply', [0,0,0], 1.45, 200);
+            self.AddPly('PlateStand.ply', [1.55,-0.6, 1.31], 1, 1);
+            self.AddPly('PlateStand.ply', [-0.35, -0.6, 1.31], 1, 1);
         end
         
         function AddPly(self, fileName, position, rotationAngle, scaleFactor)
@@ -43,4 +45,3 @@ classdef EnvironmentSetup
         end
     end
 end
-
