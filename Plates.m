@@ -13,14 +13,14 @@ classdef Plates < handle
             % brickStart: 3D coordinates for where the bricks are initially placed
             % brickEnd: 3D coordinates for where the bricks will be moved to
             
-            self.platesStart = [-1.55, 0.6  1.35; 
-                                -1.55, 0.6, 1.325;  
-                                -1.55, 0.6, 1.3;                
+            self.platesStart = [-1.55, 0.6  1.425; 
+                                -1.55, 0.6, 1.4;  
+                                -1.55, 0.6, 1.375;                
                                 ];  % Plate positions
             
             self.platesEnd = [  0, 1, 1.25;
                                 0, 1, 1.30;
-                               -0, 1, 1.32;  
+                                0, 1, 1.32;  
                                      ];  % Corresponding end positions for each brick
             
             % Preallocate the cell array for storing the handles to the bricks in the environment
@@ -32,7 +32,7 @@ classdef Plates < handle
 
             for i = 1:size(self.platesStart, 1)
                 % Place each brick using the 'PlaceObject' function at its start position
-                self.plates_h{i} = PlaceObject('yellowPlate.ply', self.platesStart(i,:));
+                self.plates_h{i} = PlaceObject('yellowplatever2.ply', self.platesStart(i,:));
                 hold on;  % Retain the previous objects in the scene while adding new ones
             end
         end
