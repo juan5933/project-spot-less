@@ -1,4 +1,4 @@
-classdef SpotlessTrajectory < handle
+classdef UR3eTrajectory < handle
     % This class handles the robot's movement trajectory for picking up and
     % dropping off plates. It computes inverse kinematics, checks position error
     % tolerance, and animates both the robot and gripper.
@@ -19,7 +19,7 @@ classdef SpotlessTrajectory < handle
     end
 
     methods
-        function self = SpotlessTrajectory(robot, plates, gripper)
+        function self = UR3eTrajectory(robot, plates, gripper)
             % Constructor to initialize the robot, number of steps, starting configuration, plates, and gripper
             self.robot = robot;  % Assign the robot instance
             self.steps = 50;  % Set the number of steps for trajectory interpolation
@@ -35,12 +35,11 @@ classdef SpotlessTrajectory < handle
             fprintf('\n');
 
             % Loop over all plates to pick and place them
-            for plateIndex = 1:9
-                self.AbovePickupPoint();  % Move to the point above the plate's pickup position
-                self.PickupPlate(plateIndex);  % Move to and pick up the plate
-                self.AbovePickupPoint();  % Return to above the pickup point
-                self.AboveDropoffZone();  % Move to the point above the drop-off zone
-                self.ReleasePlate(plateIndex);  % Drop the plate in the designated location
+            for plateIndex = 1:3
+                self.StandbyMode();  % Move to the point above the plate's pickup position
+                self.POC1();  % Move to the point above the drop-off zone
+                self.POC2();
+                self.POC2();
             end
             self.ReturnHome();  % Return the robot to the home position
 
@@ -50,14 +49,14 @@ classdef SpotlessTrajectory < handle
 
 
 
-        
-        function AbovePickupPoint(self)
+
+        function StandbyMode(self)
             % Move to the first waypoint above the plate pickup point.
             disp("STATUS: MOVING TO HOME POSITION")
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-1.55, 0.6  1.35]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-0.8 0.7800 1.8]) * rpy2tr(180, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -137,91 +136,14 @@ classdef SpotlessTrajectory < handle
 
 
 
-        function PickupPlate(self, plateIndex)
-            % Move to the plate's position and pick it up using platesStart from Plates class
-            disp("STATUS: MOVING TO PLATE");  % Display the current action
-            fprintf('\n');  % New line for cleaner output
 
-            % Generate the transformation to move above the plate's position
-            t2 = transl(self.plates.platesStart(plateIndex,:)) * rpy2tr(180,0,0,'deg');
-            self.qEnd = self.robot.model.ikcon(t2);  % Calculate inverse kinematics to find joint configuration
-
-            % Compute the actual joint state using forward kinematics after inverse kinematics
-            self.tActual = self.robot.model.fkine(self.qEnd).T;  % Get the actual transformation matrix
-            self.desiredPose = t2(1:3, 4);  % Extract the desired position (x, y, z) from transformation matrix
-            self.actualPose = self.tActual(1:3, 4);  % Extract the actual position from the forward kinematics result
-
-            % Compute the position error between the desired and actual positions
-            self.positionError = norm(self.desiredPose - self.actualPose);  % Calculate Euclidean distance
-
-            % Check if the error is within the tolerance (5mm)
-            if self.positionError <= self.tolerance
-                disp('Pose satisfied within +- 5mm.');  % Success message
-            else
-                disp('Pose does not meet the +-5mm tolerance.');  % Error message if tolerance is not met
-            end
-
-            % Display the desired and actual positions for debugging
-            disp('Desired pose:');
-            disp(self.desiredPose);
-
-            disp('Actual pose:');
-            disp(self.actualPose);
-
-            disp('Position error:');
-            disp(self.positionError);
-
-            % Generate the trajectory using LSPB (Linear Segment with Parabolic Blend) for smooth motion
-            s = lspb(0, 1, self.steps);  % Time scaling for the trajectory
-            path2 = nan(self.steps, 6);  % Preallocate the path array
-
-            % Interpolate joint angles between the starting and ending configurations
-            for j = 1:self.steps
-                path2(j,:) = (1-s(j)) * self.qStart + s(j) * self.qEnd;  % Interpolate joint configurations
-            end
-
-            % Animate the robot and gripper along the trajectory
-            for j = 1:self.steps
-                self.robot.model.animate(path2(j, :));  % Animate the robot at each step
-                Tr = self.robot.model.fkine(path2(j,:)).T * troty(-pi/2);  % Get the transformation matrix and rotate the gripper
-                self.gripper.robot.delay = 0;  % No delay for gripper animation
-                self.gripper.animateGripper(Tr);  % Animate the gripper to follow the end-effector
-                axis equal;  % Keep axis scaling equal for proper visualization
-                drawnow();  % Update the figure window for real-time animation
-                pause(0.01);  % Pause for a short duration to control animation speed
-
-                % Try to delete any previous text handle if it exists
-                try delete(self.text_h); end %#ok<TRYNC>
-
-                % Compute and display the final transformation at the last step
-                Tr2 = self.robot.model.fkine(path2(size(self.steps,1),:)).T;  % Get the final transformation matrix
-                try delete(Tr2); end %#ok<TRYNC>  % Try to delete Tr2 if it exists
-
-                % Create a message showing the final pose information
-                message = sprintf([num2str(round(Tr2(1,:),2,'significant')),'\n' ...
-                    num2str(round(Tr2(2,:),2,'significant')),'\n' ...
-                    num2str(round(Tr2(3,:),2,'significant'))]);
-
-                % Display the final pose as text in the plot
-                self.text_h = text(0, 0, 3, message, 'FontSize', 10, 'Color', [.6 .2 .6]);  % Purple text
-                drawnow();  % Update the figure window to show the text
-            end
-
-            % Update the starting configuration for the next move
-            self.qStart = self.qEnd;
-
-        end
-
-
-
-
-        function AboveDropoffZone(self)
+        function POC1(self)
             % Move to the dropoff zone above the target
             disp("STATUS: MOVING TO DROP OFF ZONE");  % Display the current action
             fprintf('\n');  % New line for cleaner output
 
             % Generate the transformation to move above the dropoff zone
-            t3 = transl([-0.75, 0.5, 0.5]) * rpy2tr(180,0,0,'deg');
+            t3 = transl([-0.8 0.7800 1.45]) * rpy2tr(180,0,0,'deg');
             self.qEnd = self.robot.model.ikcon(t3);  % Calculate inverse kinematics to find joint configuration
 
             % Compute the actual joint state using forward kinematics after inverse kinematics
@@ -291,34 +213,31 @@ classdef SpotlessTrajectory < handle
         end
 
 
+        function POC2(self)
+            % Move to the dropoff zone above the target
+            disp("STATUS: MOVING TO DROP OFF ZONE");  % Display the current action
+            fprintf('\n');  % New line for cleaner output
 
-
-        function ReleasePlate(self, plateIndex)
-            % Release the plate at the dropoff zone using platesEnd from the Plates class
-            disp("STATUS: PLACING PLATE AT DROP OFF ZONE");  % Display the status message
-            fprintf('\n');  % New line for clean output formatting
-
-            % Calculate the transformation matrix for the dropoff position
-            % of the plate
-            t4 = transl(self.plates.platesEnd(plateIndex,:)) * rpy2tr(180,0,0,'deg');
-            self.qEnd = self.robot.model.ikcon(t4);  % Compute the joint angles using inverse kinematics
+            % Generate the transformation to move above the dropoff zone
+            t3 = transl([-0.9 0.7800 1.45]) * rpy2tr(180,0,0,'deg');
+            self.qEnd = self.robot.model.ikcon(t3);  % Calculate inverse kinematics to find joint configuration
 
             % Compute the actual joint state using forward kinematics after inverse kinematics
             self.tActual = self.robot.model.fkine(self.qEnd).T;  % Get the actual transformation matrix
-            self.desiredPose = t4(1:3, 4);  % Extract the desired position (x, y, z)
-            self.actualPose = self.tActual(1:3, 4);  % Extract the actual position
+            self.desiredPose = t3(1:3, 4);  % Extract the desired position (x, y, z) from transformation matrix
+            self.actualPose = self.tActual(1:3, 4);  % Extract the actual position from the forward kinematics result
 
             % Compute the position error between the desired and actual positions
-            self.positionError = norm(self.desiredPose - self.actualPose);  % Euclidean distance
+            self.positionError = norm(self.desiredPose - self.actualPose);  % Calculate Euclidean distance
 
-            % Check if the position error is within the tolerance (5mm)
+            % Check if the error is within the tolerance (5mm)
             if self.positionError <= self.tolerance
-                disp('Pose satisfied within +- 5mm.');
+                disp('Pose satisfied within +- 5mm.');  % Success message
             else
-                disp('Pose does not meet the +-5mm tolerance.');
+                disp('Pose does not meet the +-5mm tolerance.');  % Error message if tolerance is not met
             end
 
-            % Display the desired and actual positions for debugging purposes
+            % Display the desired and actual positions for debugging
             disp('Desired pose:');
             disp(self.desiredPose);
 
@@ -328,45 +247,122 @@ classdef SpotlessTrajectory < handle
             disp('Position error:');
             disp(self.positionError);
 
-            % Generate a smooth trajectory using LSPB (Linear Segment with Parabolic Blend)
-            s = lspb(0, 1, self.steps);  % Time scaling for smooth motion
-            path4 = nan(self.steps, 6);  % Preallocate memory for joint trajectory
+            % Generate the trajectory using LSPB for smooth motion
+            s = lspb(0, 1, self.steps);  % Time scaling for the trajectory
+            path3 = nan(self.steps, 6);  % Preallocate the path array
 
-            % Interpolate between the start and end joint configurations
+            % Interpolate joint angles between the starting and ending configurations
             for j = 1:self.steps
-                path4(j,:) = (1-s(j)) * self.qStart + s(j) * self.qEnd;  % Linear interpolation
+                path3(j,:) = (1-s(j)) * self.qStart + s(j) * self.qEnd;  % Interpolate joint configurations
             end
 
-            % Animate the robot and the gripper as it follows the trajectory
+            % Animate the robot and gripper along the trajectory
             for j = 1:self.steps
-                self.robot.model.animate(path4(j, :));  % Animate the robot joint states
-                Tr = self.robot.model.fkine(path4(j,:)).T * troty(-pi/2);  % Get the transformation matrix for the gripper
-                self.gripper.robot.delay = 0;  % Set the delay for gripper animation
-                self.gripper.animateGripper(Tr);  % Animate the gripper following the end-effector
-                axis equal;  % Keep axis scaling uniform
-                drawnow();  % Update the plot
+                self.robot.model.animate(path3(j, :));  % Animate the robot at each step
+                Tr = self.robot.model.fkine(path3(j,:)).T * troty(-pi/2);  % Get the transformation matrix and rotate the gripper
+                self.gripper.robot.delay = 0;  % No delay for gripper animation
+                self.gripper.animateGripper(Tr);  % Animate the gripper to follow the end-effector
+                axis equal;  % Keep axis scaling equal for proper visualization
+                drawnow();  % Update the figure window for real-time animation
+                pause(0.01);  % Pause for a short duration to control animation speed
 
-                % Add a small pause to control the animation speed
-                pause(0.01);
-
-                % Try to delete the previous text handle to avoid overlap
+                % Try to delete any previous text handle if it exists
                 try delete(self.text_h); end %#ok<TRYNC>
 
-                % Compute the final transformation at the last step of the trajectory
-                Tr4 = self.robot.model.fkine(path4(size(self.steps,1),:)).T;
-                try delete(Tr4); end %#ok<TRYNC>  % Try deleting any residual transformations
+                % Compute and display the final transformation at the last step
+                Tr3 = self.robot.model.fkine(path3(size(self.steps,1),:)).T;  % Get the final transformation matrix
+                try delete(Tr3); end %#ok<TRYNC>  % Try to delete Tr3 if it exists
 
-                % Create and display the final pose information as a message
-                message = sprintf([num2str(round(Tr4(1,:),2,'significant')),'\n' ...
-                    num2str(round(Tr4(2,:),2,'significant')),'\n' ...
-                    num2str(round(Tr4(3,:),2,'significant'))]);
-                self.text_h = text(0, 0, 3, message, 'FontSize', 10, 'Color', [.6 .2 .6]);  % Display message with purple text
-                drawnow();  % Update the plot
+                % Create a message showing the final pose information
+                message = sprintf([num2str(round(Tr3(1,:),2,'significant')),'\n' ...
+                    num2str(round(Tr3(2,:),2,'significant')),'\n' ...
+                    num2str(round(Tr3(3,:),2,'significant'))]);
+
+                % Display the final pose as text in the plot
+                self.text_h = text(0, 0, 3, message, 'FontSize', 10, 'Color', [.6 .2 .6]);  % Purple text
+                drawnow();  % Update the figure window to show the text
             end
 
-            % Update the starting joint configuration for the next move
+            % Update the starting configuration for the next move
             self.qStart = self.qEnd;
+
         end
+
+        function POC3(self)
+            % Move to the dropoff zone above the target
+            disp("STATUS: MOVING TO DROP OFF ZONE");  % Display the current action
+            fprintf('\n');  % New line for cleaner output
+
+            % Generate the transformation to move above the dropoff zone
+            t3 = transl([-0.7 0.7800 1.45]) * rpy2tr(180,0,0,'deg');
+            self.qEnd = self.robot.model.ikcon(t3);  % Calculate inverse kinematics to find joint configuration
+
+            % Compute the actual joint state using forward kinematics after inverse kinematics
+            self.tActual = self.robot.model.fkine(self.qEnd).T;  % Get the actual transformation matrix
+            self.desiredPose = t3(1:3, 4);  % Extract the desired position (x, y, z) from transformation matrix
+            self.actualPose = self.tActual(1:3, 4);  % Extract the actual position from the forward kinematics result
+
+            % Compute the position error between the desired and actual positions
+            self.positionError = norm(self.desiredPose - self.actualPose);  % Calculate Euclidean distance
+
+            % Check if the error is within the tolerance (5mm)
+            if self.positionError <= self.tolerance
+                disp('Pose satisfied within +- 5mm.');  % Success message
+            else
+                disp('Pose does not meet the +-5mm tolerance.');  % Error message if tolerance is not met
+            end
+
+            % Display the desired and actual positions for debugging
+            disp('Desired pose:');
+            disp(self.desiredPose);
+
+            disp('Actual pose:');
+            disp(self.actualPose);
+
+            disp('Position error:');
+            disp(self.positionError);
+
+            % Generate the trajectory using LSPB for smooth motion
+            s = lspb(0, 1, self.steps);  % Time scaling for the trajectory
+            path3 = nan(self.steps, 6);  % Preallocate the path array
+
+            % Interpolate joint angles between the starting and ending configurations
+            for j = 1:self.steps
+                path3(j,:) = (1-s(j)) * self.qStart + s(j) * self.qEnd;  % Interpolate joint configurations
+            end
+
+            % Animate the robot and gripper along the trajectory
+            for j = 1:self.steps
+                self.robot.model.animate(path3(j, :));  % Animate the robot at each step
+                Tr = self.robot.model.fkine(path3(j,:)).T * troty(-pi/2);  % Get the transformation matrix and rotate the gripper
+                self.gripper.robot.delay = 0;  % No delay for gripper animation
+                self.gripper.animateGripper(Tr);  % Animate the gripper to follow the end-effector
+                axis equal;  % Keep axis scaling equal for proper visualization
+                drawnow();  % Update the figure window for real-time animation
+                pause(0.01);  % Pause for a short duration to control animation speed
+
+                % Try to delete any previous text handle if it exists
+                try delete(self.text_h); end %#ok<TRYNC>
+
+                % Compute and display the final transformation at the last step
+                Tr3 = self.robot.model.fkine(path3(size(self.steps,1),:)).T;  % Get the final transformation matrix
+                try delete(Tr3); end %#ok<TRYNC>  % Try to delete Tr3 if it exists
+
+                % Create a message showing the final pose information
+                message = sprintf([num2str(round(Tr3(1,:),2,'significant')),'\n' ...
+                    num2str(round(Tr3(2,:),2,'significant')),'\n' ...
+                    num2str(round(Tr3(3,:),2,'significant'))]);
+
+                % Display the final pose as text in the plot
+                self.text_h = text(0, 0, 3, message, 'FontSize', 10, 'Color', [.6 .2 .6]);  % Purple text
+                drawnow();  % Update the figure window to show the text
+            end
+
+            % Update the starting configuration for the next move
+            self.qStart = self.qEnd;
+
+        end
+
 
 
 
