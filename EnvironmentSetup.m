@@ -33,7 +33,7 @@ classdef EnvironmentSetup
             self.AddPly('fireExtinguisher.ply', [2.1, -1, 0], trotz(pi), 1);
             self.AddPly('kitchenenvironment.ply', [0,0,0], trotz(pi)*1.45, 200);
             self.AddPly('PlateStand.ply', [1.55,-0.6, 1.31], trotz(pi), 1);
-            self.AddPly('PlateStand.ply', [-0.35, -0.6, 1.31], trotz(pi), 1);
+            self.AddPly('PlateStand.ply', [-0.05, -0.6, 1.31], trotz(pi), 1);
         end
         
         function AddPly(self, fileName, position, rotationFactor, scaleFactor)
