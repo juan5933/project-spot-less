@@ -356,7 +356,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-1.065 0.7800 1.4]) * rpy2tr(270, 0, 0, 'deg');
+            t1 = transl([-1.065 0.7800 1.4]) * rpy2tr(90, 0, 180, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -523,7 +523,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-0.8 0.7800 1.4]) * rpy2tr(270, 0, 0, 'deg');
+            t1 = transl([-0.8 0.7800 1.4]) * rpy2tr(90, 0, 180, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
