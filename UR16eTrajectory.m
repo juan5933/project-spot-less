@@ -107,7 +107,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-1.01 0.394 1.668]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-1.01 0.394 1.668]) * rpy2tr(270, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -190,7 +190,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-1.55 0.6  1.6]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-1.55 0.6  1.6]) * rpy2tr(270, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -273,7 +273,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-1.065 0.7800 1.4]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-1.065 0.7800 1.4]) * rpy2tr(270, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -356,7 +356,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-1.065 0.7800 1.4]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-1.065 0.7800 1.4]) * rpy2tr(270, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -439,7 +439,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-0.8 0.7800 1.4]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-0.8 0.7800 1.4]) * rpy2tr(270, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -523,7 +523,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-0.8 0.7800 1.4]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-0.8 0.7800 1.4]) * rpy2tr(270, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -608,7 +608,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-0.683 0.7 1.668]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-0.683 0.7 1.668]) * rpy2tr(270, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -692,7 +692,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');
 
             % Define the desired transformation matrix (pose) above the pickup point
-            t1 = transl([-0.3 0.7 1.8]) * rpy2tr(180, 0, 0, 'deg');
+            t1 = transl([-0.3 0.7 1.8]) * rpy2tr(270, 0, 0, 'deg');
             self.qEnd = self.robot.model.ikcon(t1);  % Compute joint configuration using inverse kinematics
 
 
@@ -778,7 +778,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');  % New line for cleaner output
 
             % Generate the transformation to move above the plate's position
-            t2 = transl(self.plates.platesStart(plateIndex,:)) * rpy2tr(90,0,0,'deg');
+            t2 = transl(self.plates.platesStart(plateIndex,:)) * rpy2tr(270,0,0,'deg');
             self.qEnd = self.robot.model.ikcon(t2);  % Calculate inverse kinematics to find joint configuration
 
             % Compute the actual joint state using forward kinematics after inverse kinematics
@@ -856,7 +856,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');  % New line for cleaner output
 
             % Generate the transformation to move above the dropoff zone
-            t3 = transl([0.05 0.603 1.8]) * rpy2tr(180,0,0,'deg');
+            t3 = transl([0.05 0.603 1.8]) * rpy2tr(270,0,0,'deg');
             self.qEnd = self.robot.model.ikcon(t3);  % Calculate inverse kinematics to find joint configuration
 
             % Compute the actual joint state using forward kinematics after inverse kinematics
@@ -935,7 +935,7 @@ classdef UR16eTrajectory < handle
 
             % Calculate the transformation matrix for the dropoff position
             % of the plate
-            t4 = transl(self.plates.platesEnd(plateIndex,:)) * rpy2tr(90,0,0,'deg');
+            t4 = transl(self.plates.platesEnd(plateIndex,:)) * rpy2tr(270,0,0,'deg');
             self.qEnd = self.robot.model.ikcon(t4);  % Compute the joint angles using inverse kinematics
 
             % Compute the actual joint state using forward kinematics after inverse kinematics
@@ -1011,7 +1011,7 @@ classdef UR16eTrajectory < handle
             fprintf('\n');  % New line for clean output formatting
 
             % Calculate the transformation matrix for the home position
-            t5 = transl([-0.683 0.358 1.668]) * rpy2tr(180,0,0,'deg');
+            t5 = transl([-0.683 0.358 1.668]) * rpy2tr(270,0,0,'deg');
             self.qEnd = self.robot.model.ikcon(t5);  % Compute the joint angles using inverse kinematics
 
             % Compute the actual joint state using forward kinematics
