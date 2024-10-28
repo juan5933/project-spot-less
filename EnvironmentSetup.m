@@ -27,16 +27,19 @@ classdef EnvironmentSetup
     
         function ObjectLayout(self)
             % Layout all the objects (fences, tables, etc.) in the environment
-            self.AddPly('emergencyStopButton.ply', [-5,-4, 3.25], 0.4, 1);
-            self.AddPly('personMaleCasual.ply', [-1,-3,0], 1, 1.2);
-            self.AddPly('fireExtinguisher.ply', [2.1, -1, 0], 1, 1);
-            self.AddPly('kitchenenvironment.ply', [0,0,0], 1.45, 200);
+            self.AddPly('emergencyStopButton.ply', [2, 2, -0.45], trotx(-pi/2), 0.5);
+            self.AddPly('emergencyStopButton.ply', [2.5, 2, -0.45], trotx(-pi/2), 0.5);
+            self.AddPly('personMaleCasual.ply', [-1,-3,0], trotz(pi), 1.2);
+            self.AddPly('fireExtinguisher.ply', [2.1, -1, 0], trotz(pi), 1);
+            self.AddPly('kitchenenvironment.ply', [0,0,0], trotz(pi)*1.45, 200);
+            self.AddPly('PlateStand.ply', [1.451,-0.35, 1.31], trotz(pi), 1);
+            self.AddPly('PlateStand.ply', [-0.05, -0.35, 1.31], trotz(pi), 1);
         end
         
-        function AddPly(self, fileName, position, rotationAngle, scaleFactor)
+        function AddPly(self, fileName, position, rotationFactor, scaleFactor)
             % Add PLY object to the environment
             ply_h = PlaceObject(fileName, position);  % Place the object in the scene
-            verts = [get(ply_h, 'Vertices'), ones(size(get(ply_h, 'Vertices'), 1), 1)] * trotz(pi)*rotationAngle;  % Rotate the object
+            verts = [get(ply_h, 'Vertices'), ones(size(get(ply_h, 'Vertices'), 1), 1)] * rotationFactor;  % Rotate the object
             verts(:, 1:3) = verts(:, 1:3) * scaleFactor;  % Scale the object
             set(ply_h, 'Vertices', verts(:, 1:3));  % Update the vertices of the object
             hold on;
