@@ -27,10 +27,74 @@ classdef UR3e < RobotBaseClass
             end
           
             self.CreateModel();
+
+            
+            % % New values for the ellipsoid (guessed these, need proper model to work out correctly)
+            % centerPoint = [0,0,0];
+            % radii = [0.2,0.05,0.05];
+            % [X,Y,Z] = ellipsoid( centerPoint(1), centerPoint(2), centerPoint(3), radii(1), radii(2), radii(3) );
+            % for i = 1:7
+            %     self.model.points{i} = [X(:),Y(:),Z(:)];
+            %     warning off
+            %     self.model.faces{i} = delaunay(self.model.points{i});
+            %     warning on;
+            % end
+
+            % Create ellipsoid for collision detection
+
+            % Define the center points and radii for each link
+            % Example values, customize as needed for each link
+            centerPoints = [
+                0, 0, 0;  % Link 1
+                0, 0, 0;  % Link 2
+                0.12, 0, 0.12;  % Link 3
+                0.12, 0, 0;  % Link 4
+                0, 0, 0;  % Link 5
+                0, 0, 0;  % Link 6
+                0, 0, 0   % Link 7
+                ];
+
+            radiiValues = [
+                0.08, 0.08, 0.15;  % Link 1
+                0.07, 0.07, 0.08; % Link 2
+                0.19, 0.09, 0.09;  % Link 3
+                0.18, 0.08, 0.08; % Link 4
+                0.05, 0.05, 0.05;  % Link 5
+                0.05, 0.05, 0.05;   % Link 6
+                0.05, 0.05, 0.05   % Link 7
+                ];
+
+            % Generate an ellipsoid for each link with specified parameters
+            for i = 1:7
+                centerPoint = centerPoints(i, :);
+                radii = radiiValues(i, :);
+
+                % Generate ellipsoid with custom parameters for this link
+                [X, Y, Z] = ellipsoid(centerPoint(1), centerPoint(2), centerPoint(3), radii(1), radii(2), radii(3));
+
+                % Store points and faces for the model
+                self.model.points{i} = [X(:), Y(:), Z(:)];
+
+                % Suppress warnings for Delaunay triangulation and create faces
+                warning off
+                self.model.faces{i} = delaunay(self.model.points{i});
+                warning on
+            end
+
+
+
+            % axis equal
+            axis([-0.1 0.1 -0.1 0.1 -0.1 0.1]); % Adjust based on your ellipsoid dimensions
+
+            self.model.plot3d([0,0,0,0,0,0]);
+            camlight
+            hold on
+
 			self.model.base = self.model.base.T * baseTr;
             self.model.tool = self.toolTr;
-			warning('sup The DH parameters are correct. But as of July 2023 the ply files for this UR3e model are definitely incorrect, since we are using the UR3 ply files renamed as UR3e. Once replaced remove this warning.')  
+			warning('The DH parameters are correct. But as of July 2023 the ply files for this UR3e model are definitely incorrect, since we are using the UR3 ply files renamed as UR3e. Once replaced remove this warning.')  
             self.PlotAndColourRobot();
+            
 
             drawnow
         end
