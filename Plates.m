@@ -22,9 +22,9 @@ classdef Plates < handle
                                 ];  % Plate Grabbing positions
 
 
-            self.platesStart = [-1.451, 0.35  1.4; 
-                                -1.451, 0.35, 1.375;
-                                -1.451, 0.35, 1.35;
+            self.platesStart = [-1.451, 0.31,  1.42; 
+                                -1.451, 0.31, 1.381;
+                                -1.451, 0.31, 1.356;
                                 ];  % Plate positions
 
             self.platesEnd = [  0.05, 0.35, 1.355;
