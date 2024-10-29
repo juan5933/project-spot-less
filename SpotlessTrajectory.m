@@ -1,4 +1,4 @@
-classdef SpotlessTrajectoryRevC < handle
+classdef SpotlessTrajectory < handle
     % This class handles the robot's movement trajectory for picking up and
     % dropping off plates. It computes inverse kinematics, checks position error
     % tolerance, and animates both the robot and gripper.
@@ -18,11 +18,12 @@ classdef SpotlessTrajectoryRevC < handle
         plates_h
         app;
         eStopFlag;
+        arduinoObj
 
     end
 
     methods
-        function self = SpotlessTrajectoryRevC(robot2, robot1, plates, app)
+        function self = SpotlessTrajectory(robot2, robot1, plates, app)
 
             % Constructor to initialize the robot, number of steps, starting configuration, plates, and gripper
             self.robot1 = robot1;  % Assign the robot instance
@@ -40,6 +41,8 @@ classdef SpotlessTrajectoryRevC < handle
             % Main function to perform the full trajectory of picking up and dropping off plates.
             disp("STATUS: INITIALIZING ACTION")
             fprintf('\n');
+            self.arduinoObj = serialport("COM3", 9600);  % Initialize with port and baud rate
+            configureTerminator(self.arduinoObj, "LF");
 
             self.StandbyMode(); % 3
 
@@ -118,8 +121,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;
 
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
 
-                if self.app.eStopFlag == 1
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -168,7 +173,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -217,7 +225,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     pausedStep = self.stepsSixteen;
 
@@ -293,7 +304,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -368,7 +382,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -427,7 +444,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep); % Animate and hold the robot at the current position
@@ -493,7 +513,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -563,7 +586,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -623,7 +649,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -671,7 +700,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -737,7 +769,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -783,7 +818,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path2(j,:) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Interpolate joint configurations
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -834,7 +872,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path3(j,:) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Interpolate joint configurations
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -893,7 +934,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path3(j,:) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Interpolate joint configurations
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -940,7 +984,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path4(j,:) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Linear interpolation
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -1011,7 +1058,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path5(j,:) = (1-s(j)) * self.qStartSixteen + s(j) * self.qEndSixteen;  % Interpolate joint configurations
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -1060,7 +1110,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path1(j, :) = (1-s(j)) * self.qStartThree + s(j) * self.qEndThree;  % Linear interpolation for each joint angle
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -1111,7 +1164,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path3(j,:) = (1-s(j)) * self.qStartThree + s(j) * self.qEndThree;  % Interpolate joint configurations
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -1155,7 +1211,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path3(j,:) = (1-s(j)) * self.qStartThree + s(j) * self.qEndThree;  % Interpolate joint configurations
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -1202,7 +1261,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path3(j,:) = (1-s(j)) * self.qStartThree + s(j) * self.qEndThree;  % Interpolate joint configurations
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
@@ -1251,7 +1313,10 @@ classdef SpotlessTrajectoryRevC < handle
 
                 path5(j,:) = (1-s(j)) * self.qStartThree + s(j) * self.qEndThree;  % Linear interpolation
 
-                if self.app.eStopFlag == 1
+                data = readline(self.arduinoObj);  % Read line from the Arduino serial port
+                Estop = int32(str2double(data));  % Convert to integer if valid
+
+                if self.app.eStopFlag == 1 || Estop == 1
 
                     currentstep = self.robot1.model.getpos();  % Get current joint positions
                     self.robot1.model.plot(currentstep);  % Animate and hold the robot at the current position
