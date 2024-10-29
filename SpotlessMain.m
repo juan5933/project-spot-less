@@ -14,12 +14,13 @@ classdef SpotlessMain < handle
             
             % Set up the environment and bricks
             EnvironmentSetup();  % Create and display the environment
+
+
             plates = Plates();  % Initialize the Plates object
             plates.PlacePlates();  % Place the plates in the environment
             
-            % Set up the gripper
-            gripper = Gripper();  % Initialize the Gripper object
-            
+            app = Guiapp1();
+
             % Set up the robot
 
             robotSixteen = UR16e();  % Initialize the robot (Linear UR3e model)
@@ -27,7 +28,7 @@ classdef SpotlessMain < handle
 
             % Set up and run the robot trajectory, passing the robot, bricks, and gripper
             % trajectory = UR16eTrajectory(robotSixteen, plates, gripper);
-            trajectory = SpotlessTrajectory(robotThree, robotSixteen, plates, gripper);  % Initialize RobotTrajectory
+            trajectory = SpotlessTrajectoryRevC(robotThree, robotSixteen, plates, app);  % Initialize RobotTrajectory
             trajectory.Run();  % Execute the robot's movement trajectory
             
         end
