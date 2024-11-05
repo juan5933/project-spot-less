@@ -72,7 +72,7 @@ classdef EnvironmentSetup
 
         function SetupWorkspace(self)
             % Setup the workspace with defined view and axis settings
-            clf;
+            % clf;
             axis([-6 6 -3 3 -0.5 2]);  % Set axis limits for the workspace
             axis manual;               % Prevents automatic axis resizing
             view(3);                   % Set a 3D view
@@ -82,7 +82,7 @@ classdef EnvironmentSetup
 
         function AddJPG(self)
             % Add concrete texture to the environment
-            surf([-3,-3;3,3], [-2.7,4;-2.7,4], [0,0;0,0], ...
+            surf([-2.4,-2.4;3,3], [-2.7,4;-2.7,4], [0,0;0,0], ...
                 'CData', imread('concrete.jpg'), 'FaceColor', 'texturemap');
             hold on;
         end
@@ -96,6 +96,8 @@ classdef EnvironmentSetup
             self.AddPly('kitchenenvironment.ply', [0,0,0], trotz(pi)*1.45, 200);
             self.AddPly('PlateStand.ply', [1.451,-0.31, 1.31], trotz(pi), 1);
             self.AddPly('PlateStand.ply', [-0.15, -0.35, 1.31], trotz(pi), 1);
+            self.AddPly('slipMat.ply', [0.2, 0.22, 0], trotz(-pi), 4);
+            self.AddPly('slipMat.ply', [-0.08, 0.22, 0], trotz(-pi), 4);
         end
         
         function AddPly(self, fileName, position, rotationFactor, scaleFactor)
